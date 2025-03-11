@@ -4,7 +4,11 @@ variable "resource_group_name" {
 }
 
 variable "trigram" {
-  type        = string
+  type = map(object({
+    vnet_address_space         = list(string)
+    agw_subnet_address_prefixe = list(string)
+    vm_subnet_address_prefixe  = list(string)
+  }))
   description = "permet de contextualiser une infra. ex: mfo"
 }
 
@@ -41,4 +45,9 @@ variable "remote_virtual_network_id" {
 variable "traffic_manager_id" {
   type        = string
   description = "ID du Traffic Manager"
+}
+
+variable "tm_endpoint_priority" {
+  type        = number
+  description = "Priorité de l'endpoint Traffic Manager"
 }
