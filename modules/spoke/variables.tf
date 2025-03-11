@@ -3,9 +3,9 @@ variable "student_classroom" {
   description = "Nom de la classe de l'étudiant"
 }
 
-variable "student_count" {
+variable "student_number" {
   type        = number
-  description = "Nombre d'étudiants"  
+  description = "Numéro de l'étudiant"
 }
 
 variable "vm_password" {
