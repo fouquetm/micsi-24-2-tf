@@ -42,3 +42,8 @@ variable "traffic_manager_id" {
   type        = string
   description = "ID du Traffic Manager"
 }
+
+variable "tm_endpoint_priority" {
+  type        = number
+  description = "Priorité de l'endpoint"
+}

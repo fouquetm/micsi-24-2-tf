@@ -227,5 +227,5 @@ resource "azurerm_traffic_manager_azure_endpoint" "hub" {
   name               = "${var.trigram}-endpoint"
   profile_id         = var.traffic_manager_id
   target_resource_id = azurerm_public_ip.IP_Public_agw.id
-  priority           = 101
+  priority           = var.tm_endpoint_priority
 }
