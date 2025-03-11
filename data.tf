@@ -1,3 +1,3 @@
 data "azurerm_resource_group" "main" {
-  name = "rg-micsi24-2"
+  name = var.resource_group_name
 }
