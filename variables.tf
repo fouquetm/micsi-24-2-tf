@@ -47,3 +47,13 @@ variable "tm_endpoint_priority" {
   type        = number
   description = "Priorité de l'endpoint"
 }
+
+variable "private_dns_zone_name" {
+  type        = string
+  description = "Nom de la zone DNS privée"
+}
+
+variable "hub_resource_group_name" {
+  type        = string
+  description = "Nom du groupe de ressources du hub"
+}

@@ -50,6 +50,18 @@ resource "azurerm_public_ip" "IP_Public_agw" {
 }
 
 #################
+# Azure Private DNS Zone
+#################
+
+resource "azurerm_private_dns_zone_virtual_network_link" "hub" {
+  name                  = "${var.trigram}-vnet-link"
+  resource_group_name   = data.azurerm_resource_group.hub.name
+  private_dns_zone_name = var.private_dns_zone_name
+  virtual_network_id    = azurerm_virtual_network.main.id
+  registration_enabled  = true
+}
+
+#################
 #               #
 #      VM       #
 #               #
