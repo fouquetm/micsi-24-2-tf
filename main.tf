@@ -253,3 +253,31 @@ resource "azurerm_traffic_manager_external_endpoint" "hub" {
   endpoint_location = data.azurerm_resource_group.main.location
   priority          = var.tm_endpoint_priority
 }
+
+#################
+# Storage Account
+#################
+
+resource "azurerm_storage_account" "main" {
+  name                          = lower(replace("st${var.trigram}01", "-", ""))
+  resource_group_name           = data.azurerm_resource_group.main.name
+  location                      = data.azurerm_resource_group.main.location
+  account_tier                  = "Standard"
+  public_network_access_enabled = true
+  account_replication_type      = "LRS"
+}
+
+resource "azurerm_storage_container" "web" {
+  name                  = "web"
+  storage_account_name  = azurerm_storage_account.main.name
+  container_access_type = "container"
+}
+
+resource "azurerm_storage_blob" "blobfish" {
+  name                   = "blobfish.jpg"
+  storage_account_name   = azurerm_storage_account.main.name
+  storage_container_name = azurerm_storage_container.web.name
+  type                   = "Block"
+  content_type           = "image/jpeg"
+  source                 = "web/blobfish.jpg"
+}
