@@ -57,3 +57,8 @@ variable "hub_resource_group_name" {
   type        = string
   description = "Nom du groupe de ressources du hub"
 }
+
+variable "dns_zone_name" {
+  type        = string
+  description = "Nom de la zone DNS publique"
+}

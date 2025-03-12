@@ -42,7 +42,6 @@ resource "azurerm_public_ip" "IP_Public_agw" {
   resource_group_name = data.azurerm_resource_group.main.name
   location            = data.azurerm_resource_group.main.location
   allocation_method   = "Static"
-  domain_name_label   = var.trigram
 
   tags = {
     environment = "Production"
@@ -59,6 +58,18 @@ resource "azurerm_private_dns_zone_virtual_network_link" "hub" {
   private_dns_zone_name = var.private_dns_zone_name
   virtual_network_id    = azurerm_virtual_network.main.id
   registration_enabled  = true
+}
+
+#################
+# Azure DNS Zone
+#################
+
+resource "azurerm_dns_a_record" "agw" {
+  name                = var.trigram
+  zone_name           = var.dns_zone_name
+  resource_group_name = data.azurerm_resource_group.hub.name
+  ttl                 = 300
+  records             = [azurerm_public_ip.IP_Public_agw.ip_address]
 }
 
 #################
@@ -221,12 +232,12 @@ resource "azurerm_application_gateway" "WEB" {
 ######################
 
 resource "azurerm_virtual_network_peering" "PeeringtoHUB" {
-  name                      = "${var.trigram}toHUB"
-  resource_group_name       = data.azurerm_resource_group.main.name
-  virtual_network_name      = azurerm_virtual_network.main.name
-  remote_virtual_network_id = var.remote_virtual_network_id
+  name                         = "${var.trigram}toHUB"
+  resource_group_name          = data.azurerm_resource_group.main.name
+  virtual_network_name         = azurerm_virtual_network.main.name
+  remote_virtual_network_id    = var.remote_virtual_network_id
   allow_virtual_network_access = true
-  allow_forwarded_traffic = true
+  allow_forwarded_traffic      = true
 }
 
 ##############################
@@ -235,9 +246,10 @@ resource "azurerm_virtual_network_peering" "PeeringtoHUB" {
 #                            #
 ##############################
 
-resource "azurerm_traffic_manager_azure_endpoint" "hub" {
-  name               = "${var.trigram}-endpoint"
-  profile_id         = var.traffic_manager_id
-  target_resource_id = azurerm_public_ip.IP_Public_agw.id
-  priority           = var.tm_endpoint_priority
+resource "azurerm_traffic_manager_external_endpoint" "hub" {
+  name              = "${var.trigram}-endpoint"
+  profile_id        = var.traffic_manager_id
+  target            = trimsuffix(azurerm_dns_a_record.agw.fqdn, ".")
+  endpoint_location = data.azurerm_resource_group.main.location
+  priority          = var.tm_endpoint_priority
 }
