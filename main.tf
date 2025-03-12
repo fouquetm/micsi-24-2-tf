@@ -16,6 +16,7 @@ resource "azurerm_subnet" "sn-vm" {
   resource_group_name  = data.azurerm_resource_group.main.name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = var.vm_subnet_address_prefixe
+  service_endpoints    = ["Microsoft.Storage"]
 }
 
 resource "azurerm_subnet" "web-appgateway" {
@@ -260,7 +261,7 @@ resource "azurerm_traffic_manager_external_endpoint" "hub" {
 resource "random_string" "storage_name_suffix" {
   length  = 4
   special = false
-  upper   = false  
+  upper   = false
 }
 
 resource "azurerm_storage_account" "main" {
