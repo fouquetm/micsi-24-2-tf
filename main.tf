@@ -257,9 +257,14 @@ resource "azurerm_traffic_manager_external_endpoint" "hub" {
 #################
 # Storage Account
 #################
+resource "random_string" "storage_name_suffix" {
+  length  = 4
+  special = false
+  upper   = false  
+}
 
 resource "azurerm_storage_account" "main" {
-  name                          = lower(replace("st${var.trigram}01", "-", ""))
+  name                          = lower(replace("st${var.trigram}${random_string.storage_name_suffix.result}01", "-", ""))
   resource_group_name           = data.azurerm_resource_group.main.name
   location                      = data.azurerm_resource_group.main.location
   account_tier                  = "Standard"
